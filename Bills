@@ -1,0 +1,82 @@
+import java.util.*;
+
+public class BillSettlement {
+public static void main(String[] args) {
+Map&lt;String, Integer&gt; balances = new HashMap&lt;&gt;();
+List&lt;Bill&gt; bills = new ArrayList&lt;&gt;();
+
+// Add bills to the list
+
+bills.add(new Bill(&quot;Lunch&quot;, 2000, &quot;Balaji&quot;, Arrays.asList(&quot;Anand&quot;, &quot;Balaji&quot;,
+&quot;Chaitanya&quot;, &quot;Divya&quot;)));
+bills.add(new Bill(&quot;Movie ticket&quot;, 1000, &quot;Anand&quot;, Arrays.asList(&quot;Anand&quot;, &quot;Balaji&quot;,
+&quot;Chaitanya&quot;, &quot;Divya&quot;)));
+bills.add(new Bill(&quot;Snacks&quot;, 500, &quot;Chaitanya&quot;, Arrays.asList(&quot;Anand&quot;, &quot;Balaji&quot;,
+&quot;Chaitanya&quot;)));
+
+// Calculate balances
+for (Bill bill : bills) {
+String paidBy = bill.getPaidBy();
+int totalAmount = bill.getTotalAmount();
+List&lt;String&gt; sharedBy = bill.getSharedBy();
+int sharePerPerson = totalAmount / sharedBy.size();
+
+// Add amount to paidBy person
+if (!balances.containsKey(paidBy)) {
+balances.put(paidBy, totalAmount);
+} else {
+balances.put(paidBy, balances.get(paidBy) + totalAmount);
+}
+
+// Subtract amount from sharedBy persons
+for (String person : sharedBy) {
+if (!person.equals(paidBy)) {
+if (!balances.containsKey(person)) {
+
+balances.put(person, -sharePerPerson);
+} else {
+balances.put(person, balances.get(person) - sharePerPerson);
+}
+}
+}
+}
+
+// Print balances
+for (Map.Entry&lt;String, Integer&gt; entry : balances.entrySet()) {
+String person = entry.getKey();
+int balance = entry.getValue();
+System.out.println(person + &quot; owes &quot; + (-balance) + &quot; to others.&quot;);
+}
+}
+}
+
+class Bill {
+private String description;
+private int totalAmount;
+private String paidBy;
+private List&lt;String&gt; sharedBy;
+
+public Bill(String description, int totalAmount, String paidBy, List&lt;String&gt; sharedBy)
+{
+this.description = description;
+this.totalAmount = totalAmount;
+this.paidBy = paidBy;
+this.sharedBy = sharedBy;
+}
+
+public String getDescription() {
+return description;
+}
+
+public int getTotalAmount() {
+return totalAmount;
+}
+
+public String getPaidBy() {
+return paidBy;
+}
+
+public List&lt;String&gt; getSharedBy() {
+return sharedBy;
+}
+}
